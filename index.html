@@ -1,872 +1,1048 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="kk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Воздушные шары</title>
-<style>
-:root{
-  --lime:#84CC16; --lime-d:#65A30D; --lime-l:#ECFCCB;
-  --ink:#0F172A; --muted:#64748B; --line:#E2E8F0; --soft:#F1F5F9;
-  --ok:#22C55E; --ok-d:#16A34A; --bad:#EF4444; --bad-d:#DC2626;
-  --bh:clamp(120px, 24vh, 230px);
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
-body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);background:#E0F2FE;overflow:hidden;user-select:none}
-button{font-family:inherit;cursor:pointer;border:none;touch-action:manipulation}
-input,textarea{font-family:inherit;user-select:text}
-.hidden{display:none!important}
-.screen{position:fixed;inset:0}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Зияткерлік ойын тақтасы — Apple Style</title>
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --surface-glass: rgba(28, 28, 30, 0.65);
+            --surface-glass-hover: rgba(44, 44, 46, 0.75);
+            --surface-elevated: rgba(255, 255, 255, 0.07);
+            --border-subtle: rgba(255, 255, 255, 0.12);
+            --border-highlight: rgba(255, 255, 255, 0.22);
+            --text-primary: #F5F5F7;
+            --text-secondary: #86868B;
+            
+            /* Apple System Accents */
+            --accent-amber: #FF9F0A;
+            --accent-pink: #FF375F;
+            --accent-blue: #0A84FF;
+            --accent-green: #30D158;
+            --accent-red: #FF453A;
+        }
 
-/* ---------- SETUP ---------- */
-#setup{overflow:auto;background:linear-gradient(180deg,#BAE6FD 0%,#E0F2FE 60%,#F7FEE7 100%)}
-.setup-wrap{max-width:1180px;margin:0 auto;padding:24px 20px 40px}
-.s-head{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap}
-.s-head .logo{width:64px;height:78px;flex:none}
-.s-head h1{font-size:40px;font-weight:900;letter-spacing:-.02em;line-height:1}
-.s-head p{font-size:18px;color:var(--muted);font-weight:600;margin-top:4px}
-.spacer{flex:1}
-.langs{display:flex;background:#fff;border-radius:16px;padding:5px;gap:4px}
-.langs button{height:48px;padding:0 18px;border-radius:12px;background:transparent;font-size:18px;font-weight:700;color:var(--muted)}
-.langs button.on{background:var(--lime);color:#fff}
-.icon-btn{width:54px;height:54px;border-radius:14px;background:#fff;display:grid;place-items:center;color:var(--ink);flex:none}
-.icon-btn svg{width:26px;height:26px}
-.s-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:20px}
-.card{background:#fff;border-radius:24px;padding:24px}
-.card h2{font-size:24px;font-weight:800;margin-bottom:12px}
-.card h2:not(:first-child){margin-top:24px}
-.lbl{display:block;font-size:16px;font-weight:700;color:var(--muted);margin-bottom:8px}
-.seg{display:flex;gap:8px;margin-bottom:14px}
-.seg button{flex:1;height:58px;border-radius:14px;background:var(--soft);font-size:24px;font-weight:800;color:var(--ink)}
-.seg button.on{background:var(--ink);color:#fff}
-.team-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.team-row i{width:28px;height:28px;border-radius:50%;flex:none}
-.inp{width:100%;height:56px;border:2px solid var(--line);border-radius:14px;padding:0 16px;font-size:20px;font-weight:600;outline:none;background:#fff;color:var(--ink)}
-.inp:focus,textarea:focus{border-color:var(--lime)}
-.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.row.between{justify-content:space-between}
-.row+.row,.stepper+.row{margin-top:14px}
-.row span.t{font-size:18px;font-weight:600}
-.switch{position:relative;width:64px;height:36px;flex:none}
-.switch input{opacity:0;width:0;height:0}
-.switch span{position:absolute;inset:0;background:#CBD5E1;border-radius:999px;transition:.2s}
-.switch span::after{content:'';position:absolute;left:4px;top:4px;width:28px;height:28px;border-radius:50%;background:#fff;transition:.2s}
-.switch input:checked+span{background:var(--lime)}
-.switch input:checked+span::after{transform:translateX(28px)}
-.stepper{display:flex;align-items:center;gap:12px;margin-top:14px}
-.stepper button{width:58px;height:58px;border-radius:14px;background:var(--soft);font-size:30px;font-weight:700;color:var(--ink)}
-.stepper .val{font-size:30px;font-weight:900;min-width:60px;text-align:center}
-.stepper.off{opacity:.35;pointer-events:none}
-.pill{background:var(--lime-l);color:var(--lime-d);font-weight:800;font-size:16px;padding:6px 14px;border-radius:999px}
-.hint{font-size:15px;color:var(--muted);line-height:1.45;margin-bottom:10px}
-.hint code{background:var(--soft);padding:1px 6px;border-radius:6px;color:var(--ink);font-size:14px}
-textarea{width:100%;min-height:300px;border:2px solid var(--line);border-radius:16px;padding:14px;font-size:16px;line-height:1.55;outline:none;resize:vertical;white-space:pre;overflow:auto;color:var(--ink)}
-.btn{height:52px;padding:0 20px;border-radius:14px;font-size:17px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
-.btn.ghost{background:var(--soft);color:var(--ink)}
-.btn.dark{background:var(--ink);color:#fff}
-.btn.dark:disabled{opacity:.5}
-.btn.primary{background:var(--lime);color:#fff}
-.btn.big{height:76px;font-size:28px;font-weight:900;border-radius:20px;width:100%;margin-top:20px}
-.btn.primary:active,.btn.big:active{transform:scale(.99)}
-.gem{margin-top:16px;border:2px solid var(--line);border-radius:16px;overflow:hidden}
-.gem summary{list-style:none;cursor:pointer;padding:16px 18px;font-size:18px;font-weight:800;background:var(--soft)}
-.gem summary::-webkit-details-marker{display:none}
-.gem-body{padding:16px;display:flex;flex-direction:column;gap:10px}
-.gem-body .row{flex-wrap:nowrap}
-.err{color:var(--bad-d);font-weight:700;font-size:18px;margin-top:14px;min-height:1px}
-.st-ok{color:var(--lime-d);font-weight:700}
-.st-err{color:var(--bad-d);font-weight:700}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, sans-serif;
+        }
 
-/* ---------- GAME ---------- */
-#game{display:flex;flex-direction:column;background:#fff}
-.topbar{height:68px;flex:none;display:flex;align-items:center;gap:10px;padding:0 18px;background:#fff}
-.tb-title{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:900;letter-spacing:-.01em}
-.tb-title svg{width:30px;height:36px}
-.topbar .icon-btn{background:var(--soft)}
-.sky{position:relative;flex:1;min-height:0;overflow:hidden;background:linear-gradient(180deg,#38BDF8 0%,#7DD3FC 45%,#E0F2FE 100%)}
-.sun{position:absolute;right:6%;top:9%;width:90px;height:90px;border-radius:50%;background:#FDE047;box-shadow:0 0 0 18px rgba(253,224,71,.25)}
-.cloud{position:absolute;left:0;height:calc(var(--w)*.34);width:var(--w);background:#fff;border-radius:999px;opacity:.92;animation:drift var(--d) linear infinite;animation-delay:var(--dl);z-index:1}
-.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%}
-.cloud::before{width:48%;height:150%;left:14%;bottom:25%}
-.cloud::after{width:34%;height:115%;left:50%;bottom:30%}
-@keyframes drift{from{transform:translateX(-35vw)}to{transform:translateX(115vw)}}
-.ground{position:absolute;left:0;right:0;bottom:0;height:46px;background:var(--lime-d);border-top:6px solid var(--lime);z-index:1}
-.track{position:absolute;left:78px;right:24px;bottom:46px;top:calc(var(--bh) + 10px);z-index:2}
-.mark{position:absolute;left:-70px;right:0;height:0;border-top:2px dashed rgba(255,255,255,.65)}
-.mark span{position:absolute;left:0;top:0;transform:translateY(-50%);width:46px;height:24px;line-height:24px;text-align:center;background:rgba(255,255,255,.92);color:#0369A1;font-weight:900;font-size:16px;border-radius:8px}
-.mark.top{border-top:5px solid var(--lime)}
-.mark.top span{background:var(--lime);color:#fff;width:auto;padding:0 10px;height:30px;line-height:30px}
-.mark.zero{border:none}
-.balloon{position:absolute;bottom:30%;width:calc(var(--bh) * .632);height:var(--bh);transform:translateX(-50%);transition:bottom 1.1s cubic-bezier(.34,1.25,.5,1);z-index:3}
-.sway{width:100%;height:100%;position:relative;animation:sway 4.2s ease-in-out infinite;transform-origin:50% 25%}
-@keyframes sway{0%,100%{transform:rotate(-2.5deg) translateY(0)}50%{transform:rotate(2.5deg) translateY(-7px)}}
-.bsvg{width:100%;height:100%;display:block;overflow:visible;transition:filter .3s,opacity .3s}
-.flame{transform-box:fill-box;transform-origin:50% 100%;transform:scale(.55);transition:transform .25s}
-.balloon.burn .flame{animation:flick .12s ease-in-out infinite alternate}
-@keyframes flick{from{transform:scale(1.8,2.1)}to{transform:scale(2.1,2.6)}}
-.tag{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:4px;color:#fff;font-weight:800;font-size:clamp(14px,1.55vw,22px);padding:4px 14px;border-radius:999px;white-space:nowrap;max-width:24vw;overflow:hidden;text-overflow:ellipsis;transition:transform .25s,box-shadow .25s}
-.balloon.active .bsvg{filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 16px rgba(132,204,22,1))}
-.balloon.active .tag{box-shadow:0 0 0 4px var(--lime),0 0 0 7px #fff;transform:translateX(-50%) scale(1.1)}
-.balloon.out .sway{animation:none}
-.balloon.out .bsvg{filter:grayscale(1);opacity:.65}
-.balloon.out .tag{background:#94A3B8!important}
-.toast{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%) scale(.8);background:#fff;padding:18px 32px;border-radius:20px;font-size:clamp(24px,2.6vw,38px);font-weight:900;opacity:0;pointer-events:none;transition:.3s;z-index:5;text-align:center;max-width:80%}
-.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+        body {
+            background-color: var(--bg-primary);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(255, 159, 10, 0.14) 0%, transparent 45%),
+                radial-gradient(circle at 50% 85%, rgba(255, 55, 95, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 85% 25%, rgba(10, 132, 255, 0.15) 0%, transparent 45%);
+            color: var(--text-primary);
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-.qbar{position:relative;flex:none;display:flex;align-items:center;justify-content:center;padding:12px 20px 10px;background:#fff;border-top:6px solid var(--lime);min-height:110px}
-.qb-main{flex:1;min-width:0;text-align:center;padding-inline:clamp(110px,16vw,290px)}
-.qnum{display:inline-block;background:var(--lime-l);color:var(--lime-d);font-weight:800;font-size:18px;padding:4px 14px;border-radius:999px;margin-bottom:6px}
-.qtext{text-wrap:balance;font-size:clamp(34px,3.1vw,54px);font-weight:900;line-height:1.15;overflow-wrap:break-word;user-select:text}
-.qtext.long{font-size:clamp(28px,2.3vw,40px)}
-.qb-side{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:flex;align-items:center}
-.timer{position:relative;width:104px;height:104px}
-.timer svg{width:100%;height:100%;transform:rotate(-90deg)}
-.timer circle{fill:none;stroke-width:11}
-.timer .bg{stroke:var(--soft)}
-.timer .fg{stroke:var(--lime);stroke-linecap:round;transition:stroke .3s}
-.timer .num{position:absolute;inset:0;display:grid;place-items:center;font-size:40px;font-weight:900}
-.timer.warn .fg{stroke:var(--bad)} .timer.warn .num{color:var(--bad)}
-.next{height:96px;padding:0 36px;border-radius:26px;background:var(--lime);color:#fff;font-size:34px;font-weight:900;box-shadow:0 6px 0 var(--lime-d);animation:pulse 1.3s ease-in-out infinite}
-.next:active{transform:translateY(4px);box-shadow:0 2px 0 var(--lime-d)}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-.panel{flex:none;display:grid;grid-template-columns:repeat(var(--n,2),minmax(0,1fr));gap:12px;padding:0 12px 12px;background:#fff}
-.tp{position:relative;border:5px solid var(--c);border-radius:26px;padding:10px 12px 12px;display:flex;flex-direction:column;gap:10px;background:#fff;min-width:0;overflow:hidden;transition:background .3s}
-.tp.good{background:#ECFDF5} .tp.miss{background:#FFF7ED}
-.tp-head{display:flex;align-items:center;gap:10px;min-height:46px}
-.tp-name{background:var(--c);color:#fff;font-weight:900;font-size:clamp(18px,1.5vw,26px);padding:5px 16px;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
-.tp-fb{flex:1;min-width:0;font-size:clamp(18px,1.5vw,26px);font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tp-fb.ok{color:var(--ok-d)} .tp-fb.no{color:#EA580C}
-.tp-score{font-size:clamp(18px,1.5vw,26px);font-weight:900;color:#CA8A04;white-space:nowrap}
-.tp-opts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
-.opt{min-width:0;display:flex;align-items:center;gap:12px;min-height:84px;padding:8px 12px;border:4px solid var(--line);border-radius:20px;background:#F8FAFC;font-size:clamp(22px,2vw,34px);font-weight:800;text-align:left;color:var(--ink);touch-action:none;overflow-wrap:break-word;box-shadow:0 5px 0 var(--line);transition:background .2s,border-color .2s,opacity .2s,transform .1s}
-.opt span{min-width:0}
-.opt b{width:50px;height:50px;border-radius:14px;background:var(--c);color:#fff;display:grid;place-items:center;flex:none;font-size:26px}
-.opt:not(:disabled):active{transform:translateY(4px);box-shadow:0 1px 0 var(--line);border-color:var(--c)}
-.opt.ok{background:var(--ok);border-color:var(--ok-d);color:#fff;box-shadow:0 5px 0 var(--ok-d)}
-.opt.ok b{background:#fff;color:var(--ok-d)}
-.opt.bad{background:var(--bad);border-color:var(--bad-d);color:#fff;box-shadow:0 5px 0 var(--bad-d)}
-.opt.bad b{background:#fff;color:var(--bad-d)}
-.opt.dim{opacity:.35}
-.panel.n3 .opt{font-size:clamp(19px,1.5vw,27px);min-height:76px}
-.panel.n4 .tp-opts{gap:7px}
-.panel.n4 .opt{font-size:clamp(17px,1.3vw,25px);min-height:64px;padding:5px 8px;gap:8px}
-.panel.n4 .opt b{width:38px;height:38px;font-size:20px}
-.tp-lock{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#fff;color:var(--c);text-align:center;padding:10px}
-.tp.locked .tp-lock{display:flex}
-.lk-ic{font-size:clamp(48px,4vw,72px);animation:pulse 1.2s ease-in-out infinite}
-.lk-t{font-size:clamp(26px,2.2vw,38px);font-weight:900}
-.lk-s{font-size:clamp(16px,1.2vw,21px);font-weight:700;color:var(--muted)}
+        /* 16:9 Canvas */
+        .stage-16-9 {
+            width: 100vw;
+            height: 56.25vw;
+            max-height: 100vh;
+            max-width: 177.78vh;
+            display: grid;
+            grid-template-rows: 24% 76%;
+            padding: 2.8vh 3.2vw;
+            gap: 2.6vh;
+            position: relative;
+        }
 
-/* ---------- WIN ---------- */
-.overlay{position:fixed;inset:0;background:rgba(15,23,42,.62);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
-#confetti{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
-.win-card{position:relative;background:#fff;border-radius:30px;padding:28px 32px 30px;width:min(760px,96vw);max-height:94vh;overflow:auto;text-align:center;animation:pop .5s cubic-bezier(.34,1.5,.5,1)}
-@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
-.win-b .bsvg{width:110px;height:170px}
-.win-b{display:flex;justify-content:center;gap:18px;height:170px;margin:0 auto;animation:float 3s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.win-lbl{font-size:20px;font-weight:800;color:var(--lime-d);text-transform:uppercase;letter-spacing:.08em;margin-top:6px}
-.win-card h2{font-size:clamp(34px,4.5vw,56px);font-weight:900;line-height:1.1;margin:4px 0}
-.win-card p{font-size:22px;font-weight:600;color:var(--muted)}
-.win-card h3{font-size:22px;font-weight:800;margin:20px 0 8px;text-align:left}
-table{width:100%;border-collapse:collapse;font-size:22px}
-th{font-size:16px;color:var(--muted);font-weight:700;text-align:center;padding:8px}
-th:first-child,td:first-child{text-align:left}
-td{padding:12px 8px;border-top:2px solid var(--soft);font-weight:700;text-align:center}
-td i{display:inline-block;width:18px;height:18px;border-radius:50%;margin-right:10px;vertical-align:-2px}
-tr.w td{background:var(--lime-l)}
-td.c{color:var(--ok-d)} td.x{color:var(--bad-d)}
-.win-btns{display:flex;gap:12px;margin-top:22px}
-.win-btns .btn{flex:1;height:72px;font-size:24px;font-weight:900;border-radius:20px}
+        /* SVG Icon Utility */
+        .icon-svg {
+            width: 2.2vh;
+            height: 2.2vh;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            flex-shrink: 0;
+        }
 
-@media (max-height:820px){
-  .topbar{height:56px}
-  .qbar{padding:8px 16px 6px;min-height:90px}
-  .qnum{font-size:15px;padding:2px 12px;margin-bottom:2px}
-  .qtext{font-size:clamp(26px,2.6vw,40px)}
-  .timer{width:80px;height:80px} .timer .num{font-size:30px}
-  .next{height:72px;font-size:28px;padding:0 26px}
-  .tp{padding:6px 10px 10px;gap:6px}
-  .tp-head{min-height:36px}
-  .opt{min-height:60px;font-size:clamp(20px,1.8vw,28px)}
-  .opt b{width:42px;height:42px;font-size:22px}
-  .panel.n4 .opt{min-height:44px}
-  .panel.n4 .opt b{width:32px;height:32px;font-size:17px}
-}
-@media (max-width:860px){
-  .s-grid{grid-template-columns:1fr}
-  .panel{grid-template-columns:1fr 1fr}
-}
-</style>
+        /* TOP NAVIGATION & TIMER BAR */
+        .top-bar {
+            background: var(--surface-glass);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2.8vh;
+            display: grid;
+            grid-template-columns: 32% 36% 32%;
+            align-items: center;
+            padding: 0 2.4vw;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* Left: Time Presets & Custom */
+        .time-Controls-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.1vh;
+        }
+
+        .section-caption {
+            font-size: 1.35vh;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+        }
+
+        .segmented-presets {
+            display: inline-flex;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.4vh;
+            border-radius: 1.4vh;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            width: fit-content;
+            gap: 0.2vw;
+        }
+
+        .preset-pill {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.7vh 1vw;
+            border-radius: 1vh;
+            font-size: 1.55vh;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .preset-pill:hover {
+            color: var(--text-primary);
+        }
+
+        .preset-pill.active {
+            background: rgba(255, 255, 255, 0.14);
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .custom-time-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+        }
+
+        .apple-input {
+            width: 3.8vw;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            border-radius: 1vh;
+            padding: 0.65vh 0.5vw;
+            font-size: 1.55vh;
+            font-weight: 500;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .apple-input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .btn-glass-sm {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 0.65vh 1vw;
+            border-radius: 1vh;
+            font-size: 1.5vh;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-glass-sm:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Center: Master Clock */
+        .timer-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-readout {
+            font-size: 10.5vh;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            color: var(--text-primary);
+            transition: color 0.3s ease, transform 0.25s ease;
+        }
+
+        .timer-readout.warning {
+            color: var(--accent-amber);
+            text-shadow: 0 0 32px rgba(255, 159, 10, 0.35);
+        }
+
+        .timer-readout.danger {
+            color: var(--accent-red);
+            text-shadow: 0 0 40px rgba(255, 69, 58, 0.55);
+            animation: applePulse 0.9s infinite ease-in-out;
+        }
+
+        @keyframes applePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.035); }
+        }
+
+        /* Right: Main Actions */
+        .right-controls-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 1.2vh;
+        }
+
+        .primary-transport {
+            display: flex;
+            align-items: center;
+            gap: 0.7vw;
+        }
+
+        .btn-apple {
+            border: 1px solid var(--border-subtle);
+            background: var(--surface-elevated);
+            color: var(--text-primary);
+            padding: 1.2vh 1.4vw;
+            border-radius: 1.6vh;
+            font-size: 1.75vh;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5vw;
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .btn-apple:hover {
+            background: rgba(255, 255, 255, 0.14);
+            transform: translateY(-1px);
+        }
+
+        .btn-apple:active {
+            transform: scale(0.97);
+        }
+
+        .btn-icon-only {
+            padding: 1.2vh;
+            border-radius: 1.4vh;
+        }
+
+        .btn-play {
+            background: var(--accent-green);
+            color: #000000;
+            border: none;
+            padding: 1.2vh 1.8vw;
+            box-shadow: 0 8px 20px rgba(48, 209, 88, 0.3);
+        }
+
+        .btn-play:hover {
+            background: #40dd66;
+            box-shadow: 0 10px 25px rgba(48, 209, 88, 0.45);
+        }
+
+        .btn-pause {
+            background: var(--accent-amber);
+            color: #000000;
+            border: none;
+            padding: 1.2vh 1.8vw;
+            box-shadow: 0 8px 20px rgba(255, 159, 10, 0.3);
+        }
+
+        .btn-pause:hover {
+            background: #ffb340;
+        }
+
+        .secondary-actions {
+            display: flex;
+            gap: 0.6vw;
+        }
+
+        .btn-all-bonus {
+            background: rgba(10, 132, 255, 0.14);
+            border: 1px solid rgba(10, 132, 255, 0.35);
+            color: #64D2FF;
+            font-size: 1.45vh;
+            padding: 0.75vh 1.1vw;
+            border-radius: 1.1vh;
+        }
+
+        .btn-all-bonus:hover {
+            background: rgba(10, 132, 255, 0.25);
+        }
+
+        .btn-danger-ghost {
+            background: rgba(255, 69, 58, 0.1);
+            border: 1px solid rgba(255, 69, 58, 0.25);
+            color: #FF6961;
+            font-size: 1.45vh;
+            padding: 0.75vh 1vw;
+            border-radius: 1.1vh;
+        }
+
+        .btn-danger-ghost:hover {
+            background: rgba(255, 69, 58, 0.22);
+        }
+
+        /* TEAMS GRID */
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.2vw;
+            height: 100%;
+        }
+
+        .team-card {
+            background: var(--surface-glass);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid var(--border-subtle);
+            border-radius: 3.2vh;
+            padding: 2.8vh 2vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 28px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            transition: border-color 0.3s ease;
+        }
+
+        /* Top Subtle Glow Line per Team */
+        .team-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 15%;
+            right: 15%;
+            height: 3px;
+            border-radius: 0 0 4px 4px;
+            opacity: 0.9;
+        }
+
+        .team-1::before { background: var(--accent-amber); box-shadow: 0 2px 20px var(--accent-amber); }
+        .team-2::before { background: var(--accent-pink); box-shadow: 0 2px 20px var(--accent-pink); }
+        .team-3::before { background: var(--accent-blue); box-shadow: 0 2px 20px var(--accent-blue); }
+
+        /* Team Header */
+        .team-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9vw;
+            width: 100%;
+        }
+
+        .team-badge-icon {
+            width: 5.2vh;
+            height: 5.2vh;
+            border-radius: 1.5vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .team-1 .team-badge-icon { background: rgba(255, 159, 10, 0.15); color: var(--accent-amber); }
+        .team-2 .team-badge-icon { background: rgba(255, 55, 95, 0.15); color: var(--accent-pink); }
+        .team-3 .team-badge-icon { background: rgba(10, 132, 255, 0.15); color: var(--accent-blue); }
+
+        .team-badge-icon .icon-svg {
+            width: 2.8vh;
+            height: 2.8vh;
+        }
+
+        .team-title {
+            font-size: 3.3vh;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            outline: none;
+            border-bottom: 1px dashed transparent;
+            padding: 0.2vh 0.4vw;
+            transition: border-color 0.2s;
+        }
+
+        .team-title:focus {
+            border-color: var(--text-secondary);
+        }
+
+        /* Giant Score Display */
+        .score-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin: 0.5vh 0;
+        }
+
+        .score-display {
+            font-size: 21vh; /* Enlarged as requested */
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.04em;
+            line-height: 0.95;
+            cursor: pointer;
+            padding: 1.5vh 3.2vw;
+            border-radius: 3vh;
+            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, border-color 0.2s ease;
+            text-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+            user-select: none;
+        }
+
+        .score-display:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--border-highlight);
+            transform: scale(1.025);
+        }
+
+        .score-display:active {
+            transform: scale(0.96);
+        }
+
+        .score-stepper {
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+            margin-top: 1.8vh;
+        }
+
+        .btn-stepper {
+            width: 5.8vw;
+            height: 5.2vh;
+            border-radius: 1.5vh;
+            border: 1px solid var(--border-subtle);
+            background: var(--surface-elevated);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.18s ease;
+        }
+
+        .btn-stepper .icon-svg {
+            width: 2.5vh;
+            height: 2.5vh;
+            stroke-width: 2.4;
+        }
+
+        .btn-stepper.plus:hover {
+            background: rgba(48, 209, 88, 0.22);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .btn-stepper.minus:hover {
+            background: rgba(255, 69, 58, 0.2);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .btn-stepper:active {
+            transform: scale(0.94);
+        }
+
+        /* Lifelines (Көмек түрлері) */
+        .lifelines-area {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.1vh;
+            padding-top: 1.6vh;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .lifelines-label {
+            font-size: 1.3vh;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .lifelines-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8vw;
+        }
+
+        .btn-lifeline {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 1.3vh 0.8vw;
+            border-radius: 1.6vh;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55vw;
+            font-size: 1.65vh;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-lifeline:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--border-highlight);
+            transform: translateY(-1px);
+        }
+
+        .btn-lifeline.used {
+            opacity: 0.28;
+            background: rgba(0, 0, 0, 0.35);
+            border-color: transparent;
+            text-decoration: line-through;
+            transform: none;
+        }
+
+        /* Apple-style Notification Banner */
+        .apple-toast {
+            position: fixed;
+            bottom: 3.5vh;
+            left: 50%;
+            transform: translateX(-50%) translateY(150%);
+            background: rgba(44, 44, 46, 0.88);
+            backdrop-filter: blur(30px) saturate(190%);
+            -webkit-backdrop-filter: blur(30px) saturate(190%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1.8vh 2.8vw;
+            border-radius: 999px;
+            font-size: 2.3vh;
+            font-weight: 600;
+            color: var(--text-primary);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+            display: flex;
+            align-items: center;
+            gap: 0.8vw;
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 999;
+        }
+
+        .apple-toast.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
 </head>
 <body>
 
-<!-- ============ SETUP ============ -->
-<section id="setup" class="screen">
-  <div class="setup-wrap">
-    <header class="s-head">
-      <div class="logo" id="logoBalloon"></div>
-      <div>
-        <h1 data-i18n="title"></h1>
-        <p data-i18n="subtitle"></p>
-      </div>
-      <div class="spacer"></div>
-      <div class="langs" id="langs">
-        <button data-lang="kk">Қазақша</button>
-        <button data-lang="ru">Русский</button>
-        <button data-lang="uz">Ўзбекча</button>
-      </div>
-      <button class="icon-btn fs-btn" aria-label="Fullscreen"></button>
+<div class="stage-16-9">
+    <!-- TOP BAR -->
+    <header class="top-bar">
+        <!-- Time Configuration -->
+        <div class="time-Controls-group">
+            <div class="section-caption">
+                <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Уақытты баптау</span>
+            </div>
+            <div class="segmented-presets">
+                <button class="preset-pill" onclick="setTimer(30, this)">30 сек</button>
+                <button class="preset-pill active" onclick="setTimer(60, this)">1 мин</button>
+                <button class="preset-pill" onclick="setTimer(120, this)">2 мин</button>
+                <button class="preset-pill" onclick="setTimer(180, this)">3 мин</button>
+            </div>
+            <div class="custom-time-row">
+                <input type="number" id="customMin" class="apple-input" placeholder="Мин" min="0" max="99">
+                <input type="number" id="customSec" class="apple-input" placeholder="Сек" min="0" max="59">
+                <button class="btn-glass-sm" onclick="setCustomTimer()">Орнату</button>
+            </div>
+        </div>
+
+        <!-- Master Timer Readout -->
+        <div class="timer-center">
+            <div id="timerDisplay" class="timer-readout">01:00</div>
+        </div>
+
+        <!-- Master Controls -->
+        <div class="right-controls-group">
+            <div class="primary-transport">
+                <button id="startPauseBtn" class="btn-apple btn-play" onclick="toggleTimer()">
+                    <svg id="playPauseIcon" class="icon-svg" viewBox="0 0 24 24" style="fill: currentColor; stroke: none;">
+                        <polygon points="6 4 20 12 6 20 6 4"/>
+                    </svg>
+                    <span id="playPauseText">БАСТАУ</span>
+                </button>
+                <button class="btn-apple" onclick="resetTimer()" title="Уақытты қайтару">
+                    <svg class="icon-svg" viewBox="0 0 24 24">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                        <polyline points="3 3 3 8 8 8"/>
+                    </svg>
+                    <span>Қайтару</span>
+                </button>
+                <button id="soundToggleBtn" class="btn-apple btn-icon-only" onclick="toggleMute()" title="Дыбысты қосу/өшіру">
+                    <svg id="soundIcon" class="icon-svg" viewBox="0 0 24 24">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                    </svg>
+                </button>
+                <button class="btn-apple btn-icon-only" onclick="toggleFullScreen()" title="Толық экран">
+                    <svg class="icon-svg" viewBox="0 0 24 24">
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="secondary-actions">
+                <button class="btn-apple btn-all-bonus" onclick="addAllScores(1)">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span>Барлық топқа +1 ұпай</span>
+                </button>
+                <button class="btn-apple btn-danger-ghost" onclick="resetAllGame()">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    <span>Ойынды жаңарту</span>
+                </button>
+            </div>
+        </div>
     </header>
 
-    <div class="s-grid">
-      <div class="card">
-        <h2 data-i18n="teams"></h2>
-        <label class="lbl" data-i18n="teamCount"></label>
-        <div class="seg" id="countSeg">
-          <button data-n="2">2</button><button data-n="3">3</button><button data-n="4">4</button>
-        </div>
-        <div id="teamInputs"></div>
-
-        <h2 data-i18n="steps"></h2>
-        <div class="stepper">
-          <button id="stMinus">−</button>
-          <span class="val" id="stVal">10</span>
-          <span class="t" data-i18n="stepsUnit"></span>
-          <button id="stPlus">+</button>
-        </div>
-        <div class="seg" id="stSeg" style="margin-top:10px">
-          <button data-st="5">5</button><button data-st="7">7</button><button data-st="10">10</button><button data-st="15">15</button><button data-st="20">20</button>
-        </div>
-
-        <h2 data-i18n="timer"></h2>
-        <div class="row">
-          <label class="switch"><input type="checkbox" id="timerOn"><span></span></label>
-          <span class="t" data-i18n="timerOn"></span>
-        </div>
-        <div class="stepper" id="secStep">
-          <button id="secMinus">−</button>
-          <span class="val" id="secVal">30</span>
-          <span class="t" data-i18n="sec"></span>
-          <button id="secPlus">+</button>
-        </div>
-        <div class="row">
-          <label class="switch"><input type="checkbox" id="shuffleOn"><span></span></label>
-          <span class="t" data-i18n="shuffle"></span>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="row between">
-          <h2 data-i18n="questions" style="margin:0"></h2>
-          <span class="pill" id="qCount"></span>
-        </div>
-        <p class="hint" style="margin-top:10px" id="qHint"></p>
-        <textarea id="qInput" spellcheck="false"></textarea>
-        <div class="row" style="margin-top:10px">
-          <button class="btn ghost" id="sampleBtn" data-i18n="sample"></button>
-          <button class="btn ghost" id="clearBtn" data-i18n="clear"></button>
-        </div>
-
-        <details class="gem" id="gemBox">
-          <summary>✨ <span data-i18n="gemini"></span></summary>
-          <div class="gem-body">
-            <input class="inp" id="gKey" type="password" autocomplete="off" data-i18n-ph="apiKey">
-            <input class="inp" id="gTopic" data-i18n-ph="topic">
-            <div class="row">
-              <input class="inp" id="gModel" style="flex:1" value="gemini-2.5-flash">
-              <input class="inp" id="gCount" type="number" min="3" max="30" value="10" style="width:96px">
-              <button class="btn dark" id="gBtn" style="height:56px" data-i18n="generate"></button>
+    <!-- TEAMS SCOREBOARD -->
+    <main class="teams-grid">
+        <!-- Team 1: Зиёкорлар -->
+        <section class="team-card team-1">
+            <div class="team-header">
+                <div class="team-badge-icon">
+                    <svg class="icon-svg" viewBox="0 0 24 24">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                    </svg>
+                </div>
+                <h2 class="team-title" contenteditable="true" spellcheck="false">Зиёкорлар</h2>
             </div>
-            <p class="hint" id="gStatus" style="margin:0"></p>
-            <p class="hint" data-i18n="keyNote" style="margin:0"></p>
-          </div>
-        </details>
-      </div>
-    </div>
 
-    <div class="err" id="setupErr"></div>
-    <button class="btn primary big" id="startBtn">▶&nbsp;<span data-i18n="start"></span></button>
-  </div>
-</section>
+            <div class="score-center">
+                <div id="score-1" class="score-display" onclick="changeScore(1, 1)" title="+1 ұпай қосу үшін басыңыз">0</div>
+                <div class="score-stepper">
+                    <button class="btn-stepper minus" onclick="changeScore(1, -1)" title="-1 ұпай">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <button class="btn-stepper plus" onclick="changeScore(1, 1)" title="+1 ұпай">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                </div>
+            </div>
 
-<!-- ============ GAME ============ -->
-<section id="game" class="screen hidden">
-  <div class="topbar">
-    <div class="tb-title"><span id="tbLogo"></span><span data-i18n="title"></span></div>
-    <div class="spacer"></div>
-    <button class="icon-btn" id="sndBtn" aria-label="Sound"></button>
-    <button class="icon-btn fs-btn" aria-label="Fullscreen"></button>
-    <button class="icon-btn" id="setBtn" aria-label="Settings"></button>
-  </div>
+            <div class="lifelines-area">
+                <div class="lifelines-label">Команда көмегі</div>
+                <div class="lifelines-grid">
+                    <button id="time-btn-1" class="btn-lifeline" onclick="useExtraTime(1)">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <circle cx="12" cy="13" r="8"/>
+                            <path d="M12 9v4l2 2"/>
+                            <path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M12 2v3"/>
+                        </svg>
+                        <span>+1 минут</span>
+                    </button>
+                    <button id="aud-btn-1" class="btn-lifeline" onclick="useAudienceHelp(1)">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        <span>Зал көмегі</span>
+                    </button>
+                </div>
+            </div>
+        </section>
 
-  <div class="sky" id="sky">
-    <div class="sun"></div>
-    <div id="clouds"></div>
-    <div class="track" id="track"></div>
-    <div class="ground"></div>
-    <div class="toast" id="toast"></div>
-  </div>
+        <!-- Team 2: Дўстлар -->
+        <section class="team-card team-2">
+            <div class="team-header">
+                <div class="team-badge-icon">
+                    <svg class="icon-svg" viewBox="0 0 24 24">
+                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                    </svg>
+                </div>
+                <h2 class="team-title" contenteditable="true" spellcheck="false">Дўстлар</h2>
+            </div>
 
-  <div class="qbar">
-    <div class="qb-main">
-      <span class="qnum hidden" id="qnum"></span>
-      <div class="qtext" id="qtext"></div>
-    </div>
-    <div class="qb-side">
-      <div class="timer hidden" id="timer">
-        <svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="42"/><circle class="fg" id="ring" cx="50" cy="50" r="42"/></svg>
-        <div class="num" id="tnum">30</div>
-      </div>
-      <button class="next hidden" id="nextBtn"></button>
-    </div>
-  </div>
-  <div class="panel" id="panel"></div>
-</section>
+            <div class="score-center">
+                <div id="score-2" class="score-display" onclick="changeScore(2, 1)" title="+1 ұпай қосу үшін басыңыз">0</div>
+                <div class="score-stepper">
+                    <button class="btn-stepper minus" onclick="changeScore(2, -1)" title="-1 ұпай">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <button class="btn-stepper plus" onclick="changeScore(2, 1)" title="+1 ұпай">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                </div>
+            </div>
 
-<!-- ============ WIN ============ -->
-<div class="overlay hidden" id="win">
-  <canvas id="confetti"></canvas>
-  <div class="win-card">
-    <div class="win-b" id="winBalloon"></div>
-    <div class="win-lbl" data-i18n="winner"></div>
-    <h2 id="winName"></h2>
-    <p id="winReason"></p>
-    <h3 data-i18n="stats"></h3>
-    <table id="statTable"></table>
-    <div class="win-btns">
-      <button class="btn primary" id="againBtn">↻&nbsp;<span data-i18n="again"></span></button>
-      <button class="btn ghost" id="toSetupBtn">⚙&nbsp;<span data-i18n="settings"></span></button>
-    </div>
-  </div>
+            <div class="lifelines-area">
+                <div class="lifelines-label">Команда көмегі</div>
+                <div class="lifelines-grid">
+                    <button id="time-btn-2" class="btn-lifeline" onclick="useExtraTime(2)">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <circle cx="12" cy="13" r="8"/>
+                            <path d="M12 9v4l2 2"/>
+                            <path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M12 2v3"/>
+                        </svg>
+                        <span>+1 минут</span>
+                    </button>
+                    <button id="aud-btn-2" class="btn-lifeline" onclick="useAudienceHelp(2)">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        <span>Зал көмегі</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team 3: Фикр етакчилари -->
+        <section class="team-card team-3">
+            <div class="team-header">
+                <div class="team-badge-icon">
+                    <svg class="icon-svg" viewBox="0 0 24 24">
+                        <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
+                        <path d="M9 18h6"/>
+                        <path d="M10 22h4"/>
+                    </svg>
+                </div>
+                <h2 class="team-title" contenteditable="true" spellcheck="false">Фикр етакчилари</h2>
+            </div>
+
+            <div class="score-center">
+                <div id="score-3" class="score-display" onclick="changeScore(3, 1)" title="+1 ұпай қосу үшін басыңыз">0</div>
+                <div class="score-stepper">
+                    <button class="btn-stepper minus" onclick="changeScore(3, -1)" title="-1 ұпай">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <button class="btn-stepper plus" onclick="changeScore(3, 1)" title="+1 ұпай">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="lifelines-area">
+                <div class="lifelines-label">Команда көмегі</div>
+                <div class="lifelines-grid">
+                    <button id="time-btn-3" class="btn-lifeline" onclick="useExtraTime(3)">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <circle cx="12" cy="13" r="8"/>
+                            <path d="M12 9v4l2 2"/>
+                            <path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M12 2v3"/>
+                        </svg>
+                        <span>+1 минут</span>
+                    </button>
+                    <button id="aud-btn-3" class="btn-lifeline" onclick="useAudienceHelp(3)">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        <span>Зал көмегі</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Apple Pill Notification -->
+<div id="appleToast" class="apple-toast">
+    <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    <span id="toastText">Хабарлама</span>
 </div>
 
 <script>
-(function(){
-'use strict';
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
-const COLORS = ['#EF4444','#3B82F6','#F59E0B','#A855F7'];
-const LETTERS = ['A','B','C','D'];
+    let scores = { 1: 0, 2: 0, 3: 0 };
+    let defaultTime = 60;
+    let currentTime = 60;
+    let timerInterval = null;
+    let isRunning = false;
+    let isMuted = false;
 
-/* ---------- ТЕКСТЫ ИНТЕРФЕЙСА ---------- */
-const I18N = {
- ru:{title:'Воздушные шары',subtitle:'Командная викторина',teams:'Команды',teamCount:'Количество команд',timer:'Время на ответ',timerOn:'Таймер включён',sec:'сек',shuffle:'Перемешать вопросы',questions:'Вопросы',
-  qHint:'Одна строка = один вопрос: <code>Вопрос | A | B | C | D | номер правильного (1–4)</code>.',
-  sample:'Примеры: физика, 7 класс',clear:'Очистить',gemini:'Сгенерировать вопросы (Gemini)',apiKey:'API-ключ Gemini',topic:'Предмет, класс, тема урока',generate:'Сгенерировать',generating:'Генерирую…',genOk:'Готово: {n} вопросов',genErr:'Ошибка: ',needKey:'Введите API-ключ и тему',keyNote:'Ключ хранится только в этом браузере.',
-  start:'Начать игру',noQ:'Добавьте хотя бы один вопрос',badLine:'Ошибка формата в строке: {n}',loaded:'Вопросов: {n}',
-  q:'Вопрос',next:'Дальше →',correct:'Верно! ▲',wrong:'Неверно! ▼',timeUp:'Время вышло! ▼',oral:'Устный вопрос — оцените ответ кнопками ✓ / ✗',
-  landed:'«{t}» приземлилась и выбывает',finish:'🏁 10',winner:'Победитель',winTop:'первой поднялась на высоту 10!',winLast:'осталась последней в небе!',
-  stats:'Итоговая статистика',team:'Команда',right:'Верно',mistakes:'Ошибки',level:'Высота',again:'Играть снова',settings:'Настройки',exitQ:'Выйти в настройки? Текущая игра будет сброшена.'},
- kk:{title:'Әуе шарлары',subtitle:'Командалық викторина',teams:'Командалар',teamCount:'Командалар саны',timer:'Жауап беру уақыты',timerOn:'Таймер қосулы',sec:'сек',shuffle:'Сұрақтарды араластыру',questions:'Сұрақтар',
-  qHint:'Бір жол = бір сұрақ: <code>Сұрақ | A | B | C | D | дұрыс жауап нөмірі (1–4)</code>.',
-  sample:'Мысалдар: физика, 7 сынып',clear:'Тазалау',gemini:'Сұрақтарды генерациялау (Gemini)',apiKey:'Gemini API кілті',topic:'Пән, сынып, сабақ тақырыбы',generate:'Генерациялау',generating:'Генерациялануда…',genOk:'Дайын: {n} сұрақ',genErr:'Қате: ',needKey:'API кілті мен тақырыпты енгізіңіз',keyNote:'Кілт тек осы браузерде сақталады.',
-  start:'Ойынды бастау',noQ:'Кемінде бір сұрақ қосыңыз',badLine:'Пішім қатесі бар жол: {n}',loaded:'Сұрақтар: {n}',
-  q:'Сұрақ',next:'Келесі →',correct:'Дұрыс! ▲',wrong:'Қате! ▼',timeUp:'Уақыт бітті! ▼',oral:'Ауызша сұрақ — жауапты ✓ / ✗ батырмаларымен бағалаңыз',
-  landed:'«{t}» жерге қонып, ойыннан шықты',finish:'🏁 10',winner:'Жеңімпаз',winLast:'аспанда жалғыз қалды!',
-  stats:'Қорытынды статистика',team:'Команда',right:'Дұрыс',mistakes:'Қате',level:'Биіктік',again:'Қайта ойнау',settings:'Баптаулар',exitQ:'Баптауларға шығасыз ба? Ағымдағы ойын тоқтатылады.'},
- uz:{title:'Ҳаво шарлари',subtitle:'Жамоавий викторина',teams:'Жамоалар',teamCount:'Жамоалар сони',timer:'Жавоб бериш вақти',timerOn:'Таймер ёқилган',sec:'сон',shuffle:'Саволларни аралаштириш',questions:'Саволлар',
-  qHint:'Бир қатор = бир савол: <code>Савол | A | B | C | D | тўғри жавоб рақами (1–4)</code>.',
-  sample:'Намуналар: физика, 7-синф',clear:'Тозалаш',gemini:'Саволларни яратиш (Gemini)',apiKey:'Gemini API калити',topic:'Фан, синф, дарс мавзуси',generate:'Яратиш',generating:'Яратилмоқда…',genOk:'Тайёр: {n} та савол',genErr:'Хато: ',needKey:'API калити ва мавзуни киритинг',keyNote:'Калит фақат шу браузерда сақланади.',
-  start:'Ўйинни бошлаш',noQ:'Камида битта савол қўшинг',badLine:'Формат хатоси бор қатор: {n}',loaded:'Саволлар: {n}',
-  q:'Савол',next:'Кейинги →',correct:'Тўғри! ▲',wrong:'Нотўғри! ▼',timeUp:'Вақт тугади! ▼',oral:'Оғзаки савол — жавобни ✓ / ✗ тугмалари билан баҳоланг',
-  landed:'«{t}» ерга қўнди ва ўйиндан чиқди',finish:'🏁 10',winner:'Ғолиб',winLast:'осмонда ёлғиз қолди!',
-  stats:'Якуний статистика',team:'Жамоа',right:'Тўғри',mistakes:'Хато',level:'Баландлик',again:'Қайта ўйнаш',settings:'Созламалар',exitQ:'Созламаларга чиқасизми? Жорий ўйин тўхтатилади.'}
-};
-Object.assign(I18N.ru,{steps:'Шагов до финиша',stepsUnit:'шагов',winTop:'первой долетела до финиша!',winTie:'долетели до финиша вместе!',level:'Шаги',exitTap:'Нажмите ⚙ ещё раз, чтобы выйти',go:'Старт!',shuffle:'Перемешать вопросы',sample:'Примеры: 2 класс',next:'Дальше ▶',good:'⭐ Молодцы!',miss:'🙂 Не страшно!',timeUp:'⏰ Время вышло',locked:'Ответ принят!',wait:'Ждём другие команды…',winners:'Победители'});
-Object.assign(I18N.kk,{steps:'Мәреге дейінгі қадам',stepsUnit:'қадам',winTop:'мәреге бірінші жетті!',winTie:'мәреге бірге жетті!',level:'Қадам',exitTap:'Шығу үшін ⚙ тағы басыңыз',go:'Бастадық!',shuffle:'Сұрақтарды араластыру',sample:'Мысалдар: 2 сынып',next:'Келесі ▶',good:'⭐ Жарайсыңдар!',miss:'🙂 Ештеңе етпейді!',timeUp:'⏰ Уақыт бітті',locked:'Жауап қабылданды!',wait:'Басқа командаларды күтеміз…',winners:'Жеңімпаздар'});
-Object.assign(I18N.uz,{steps:'Маррагача қадамлар',stepsUnit:'қадам',winTop:'биринчи бўлиб маррага етди!',winTie:'маррага бирга етди!',level:'Қадам',exitTap:'Чиқиш учун ⚙ ни яна босинг',go:'Бошладик!',shuffle:'Саволларни аралаштириш',sample:'Намуналар: 2-синф',next:'Кейинги ▶',good:'⭐ Баракалла!',miss:'🙂 Ҳечқиси йўқ!',timeUp:'⏰ Вақт тугади',locked:'Жавоб қабул қилинди!',wait:'Бошқа жамоаларни кутамиз…',winners:'Ғолиблар'});
-const DEF_NAMES = {
- ru:['Красные','Синие','Жёлтые','Фиолетовые'],
- kk:['Қызылдар','Көктер','Сарылар','Күлгіндер'],
- uz:['Қизиллар','Кўклар','Сариқлар','Бинафшалар']
-};
+    // Web Audio API Synthesizer for Apple-like UI & Timer Sounds
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-/* ---------- ПРИМЕРЫ ВОПРОСОВ: 2 класс (математика, окружающий мир) ---------- */
-const SAMPLES = {
- ru:`5 + 3 = ? | 7 | 8 | 9 | 6 | 2
-10 − 4 = ? | 5 | 7 | 6 | 4 | 3
-2 × 3 = ? | 5 | 6 | 8 | 9 | 2
-12 + 8 = ? | 18 | 20 | 21 | 19 | 2
-Сколько дней в неделе? | 5 | 6 | 7 | 10 | 3
-Какое время года после зимы? | Осень | Весна | Лето | Зима | 2
-Сколько ног у кошки? | 2 | 3 | 4 | 6 | 3
-Какого цвета трава летом? | Синего | Зелёного | Красного | Белого | 2
-Какое животное умеет летать? | Корова | Птица | Рыба | Кошка | 2
-Сколько месяцев в году? | 10 | 12 | 7 | 24 | 2`,
- kk:`5 + 3 = ? | 7 | 8 | 9 | 6 | 2
-10 − 4 = ? | 5 | 7 | 6 | 4 | 3
-2 × 3 = ? | 5 | 6 | 8 | 9 | 2
-12 + 8 = ? | 18 | 20 | 21 | 19 | 2
-Аптада неше күн бар? | 5 | 6 | 7 | 10 | 3
-Қыстан кейін қай жыл мезгілі келеді? | Күз | Көктем | Жаз | Қыс | 2
-Мысықтың неше аяғы бар? | 2 | 3 | 4 | 6 | 3
-Жазда шөп қандай түсті болады? | Қызыл | Жасыл | Ақ | Сары | 2
-Қай жануар ұша алады? | Сиыр | Құс | Балық | Мысық | 2
-Бір жылда неше ай бар? | 10 | 12 | 7 | 24 | 2`,
- uz:`5 + 3 = ? | 7 | 8 | 9 | 6 | 2
-10 − 4 = ? | 5 | 7 | 6 | 4 | 3
-2 × 3 = ? | 5 | 6 | 8 | 9 | 2
-12 + 8 = ? | 18 | 20 | 21 | 19 | 2
-Ҳафтада неча кун бор? | 5 | 6 | 7 | 10 | 3
-Қишдан кейин қайси фасл келади? | Куз | Баҳор | Ёз | Қиш | 2
-Мушукнинг нечта оёғи бор? | 2 | 3 | 4 | 6 | 3
-Ёзда ўт қандай рангда бўлади? | Қизил | Яшил | Оқ | Сариқ | 2
-Қайси ҳайвон уча олади? | Сигир | Қуш | Балиқ | Мушук | 2
-Бир йилда неча ой бор? | 10 | 12 | 7 | 24 | 2`
-};
-
-/* ---------- НАСТРОЙКИ ---------- */
-const STORE = 'alaqai_balloons_kids_v1';
-let S = {lang:'ru', n:2, names:DEF_NAMES.ru.slice(), timerOn:true, secs:30, steps:10, shuffle:true, qtext:null, key:'', model:'gemini-2.5-flash', topic:'', muted:false};
-try{ const saved = JSON.parse(localStorage.getItem(STORE)||'null'); if(saved) S = Object.assign(S, saved); }catch(e){}
-function save(){ try{ localStorage.setItem(STORE, JSON.stringify(S)); }catch(e){} }
-function t(k, v){ let s = (I18N[S.lang]||I18N.ru)[k] || I18N.ru[k] || k; if(v) for(const x in v) s = s.split('{'+x+'}').join(v[x]); return s; }
-
-/* ---------- ИКОНКИ И ШАР ---------- */
-const ICON = {
- fsIn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
- fsOut:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>',
- snd:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>',
- mute:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>',
- gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>'
-};
-function shade(hex, amt){
-  const n = parseInt(hex.slice(1),16); let r=n>>16, g=(n>>8)&255, b=n&255;
-  const tgt = amt<0?0:255, a=Math.abs(amt);
-  r=Math.round(r+(tgt-r)*a); g=Math.round(g+(tgt-g)*a); b=Math.round(b+(tgt-b)*a);
-  return '#'+((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1);
-}
-function balloonSVG(c){
-  const d = shade(c,-.28), l = shade(c,.38);
-  return `<svg class="bsvg" viewBox="0 0 120 190" xmlns="http://www.w3.org/2000/svg">
-  <path d="M60 4C24 4 4 32 4 64c0 30 22 48 38 66h36c16-18 38-36 38-66C116 32 96 4 60 4z" fill="${c}"/>
-  <path d="M60 4C46 4 36 32 36 64c0 30 8 48 12 66h24c4-18 12-36 12-66C84 32 74 4 60 4z" fill="${l}"/>
-  <path d="M60 4c-6 0-10 30-10 60 0 30 3 48 4 66h12c1-18 4-36 4-66C70 34 66 4 60 4z" fill="${c}"/>
-  <path d="M8 58h104" stroke="${d}" stroke-width="5" opacity=".35"/>
-  <ellipse cx="30" cy="40" rx="7" ry="15" fill="#fff" opacity=".4" transform="rotate(22 30 40)"/>
-  <rect x="42" y="127" width="36" height="9" rx="2" fill="${d}"/>
-  <path d="M44 136L47 160M76 136L73 160M54 136L56 160M66 136L64 160" stroke="#78350F" stroke-width="1.8"/>
-  <g class="flame"><path d="M60 138c-7 7-9 11-6 17 2 4 10 4 12 0 3-6 1-10-6-17z" fill="#F97316"/><path d="M60 145c-3 3-4 6-2 9 1 2 3 2 4 0 2-3 1-6-2-9z" fill="#FDE047"/></g>
-  <rect x="44" y="158" width="32" height="24" rx="4" fill="#B45309"/>
-  <rect x="44" y="158" width="32" height="6" rx="2" fill="#92400E"/>
-  <path d="M54 165v17M66 165v17" stroke="#92400E" stroke-width="1.6"/>
-</svg>`;
-}
-
-/* ---------- ЗВУКИ (Web Audio API) ---------- */
-let AC = null;
-function ac(){
-  if(!AC){ try{ AC = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return null; } }
-  if(AC.state==='suspended') AC.resume();
-  return AC;
-}
-function tone(f, at, dur, type, vol, fEnd){
-  const a=ac(); if(!a||S.muted) return;
-  const t0=a.currentTime+at, o=a.createOscillator(), g=a.createGain();
-  o.type=type||'sine'; o.frequency.setValueAtTime(f,t0);
-  if(fEnd) o.frequency.exponentialRampToValueAtTime(fEnd,t0+dur);
-  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(vol||.2,t0+.02); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
-  o.connect(g).connect(a.destination); o.start(t0); o.stop(t0+dur+.05);
-}
-function noise(at, dur, vol, freq){
-  const a=ac(); if(!a||S.muted) return;
-  const t0=a.currentTime+at, len=Math.floor(a.sampleRate*dur), buf=a.createBuffer(1,len,a.sampleRate), d=buf.getChannelData(0);
-  for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
-  const s=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain();
-  s.buffer=buf; f.type='lowpass'; f.frequency.value=freq||900;
-  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(vol||.3,t0+.05); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
-  s.connect(f).connect(g).connect(a.destination); s.start(t0);
-}
-const SFX = {
-  correct(){ noise(0,.6,.35,800); tone(523,0,.18,'triangle',.22); tone(659,.1,.18,'triangle',.22); tone(784,.2,.35,'triangle',.25); },
-  wrong(){ tone(392,0,.2,'sine',.18); tone(330,.16,.35,'sine',.16); },
-  land(){ tone(140,0,.6,'sine',.4,45); noise(0,.4,.25,300); },
-  tick(){ tone(1000,0,.06,'square',.05); },
-  win(){ [523,659,784,1047].forEach((f,i)=>tone(f,i*.15,.25,'triangle',.25)); [523,659,784,1047].forEach(f=>tone(f,.65,1.1,'triangle',.12)); noise(.6,.9,.15,1500); }
-};
-
-/* ---------- ЭКРАН НАСТРОЕК ---------- */
-const qInput = $('#qInput');
-function applyLang(){
-  document.documentElement.lang = S.lang==='kk'?'kk':S.lang==='uz'?'uz':'ru';
-  document.title = t('title');
-  $$('[data-i18n]').forEach(el=>el.textContent = t(el.dataset.i18n));
-  $$('[data-i18n-ph]').forEach(el=>el.placeholder = t(el.dataset.i18nPh));
-  $('#qHint').innerHTML = t('qHint');
-  $('#nextBtn').textContent = t('next');
-  $$('#langs button').forEach(b=>b.classList.toggle('on', b.dataset.lang===S.lang));
-  updateQCount();
-}
-function setLang(l){
-  const old = S.lang;
-  for(let i=0;i<4;i++) if(!S.names[i] || S.names[i]===DEF_NAMES[old][i]) S.names[i]=DEF_NAMES[l][i];
-  const cur = qInput.value.trim();
-  if(!cur || cur===SAMPLES[old].trim()) qInput.value = SAMPLES[l];
-  S.lang = l; S.qtext = qInput.value;
-  renderTeamInputs(); applyLang(); save();
-}
-function renderTeamInputs(){
-  const box = $('#teamInputs'); box.innerHTML='';
-  for(let i=0;i<4;i++){
-    const row = document.createElement('div'); row.className='team-row'+(i>=S.n?' hidden':'');
-    const dot = document.createElement('i'); dot.style.background = COLORS[i];
-    const inp = document.createElement('input'); inp.className='inp'; inp.maxLength=24; inp.value = S.names[i]||'';
-    inp.oninput = ()=>{ S.names[i]=inp.value; save(); };
-    row.append(dot, inp); box.append(row);
-  }
-  $$('#countSeg button').forEach(b=>b.classList.toggle('on', +b.dataset.n===S.n));
-}
-function renderTimer(){
-  $('#timerOn').checked = S.timerOn; $('#secVal').textContent = S.secs;
-  $('#secStep').classList.toggle('off', !S.timerOn);
-  $('#shuffleOn').checked = S.shuffle;
-  S.steps=Math.max(3,Math.min(30,parseInt(S.steps,10)||10));
-  $('#stVal').textContent = S.steps;
-  $$('#stSeg button').forEach(b=>b.classList.toggle('on', +b.dataset.st===S.steps));
-}
-function parseQ(text){
-  const qs=[], errs=[];
-  text.split(/\r?\n/).forEach((raw,i)=>{
-    const line = raw.trim(); if(!line || line.startsWith('#')) return;
-    const p = line.split('|').map(s=>s.trim());
-    if(p.length===1){ errs.push(i+1); return; }
-    const num = parseInt(p[p.length-1],10), opts = p.slice(1,-1);
-    if(!p[0] || opts.length<2 || opts.length>4 || opts.some(o=>!o) || isNaN(num) || num<1 || num>opts.length){ errs.push(i+1); return; }
-    qs.push({text:p[0], opts, correct:num-1});
-  });
-  return {qs, errs};
-}
-function updateQCount(){
-  const r = parseQ(qInput.value);
-  $('#qCount').textContent = t('loaded',{n:r.qs.length});
-  $('#setupErr').textContent = r.errs.length ? t('badLine',{n:r.errs.slice(0,8).join(', ')+(r.errs.length>8?'…':'')}) : '';
-  return r;
-}
-
-$$('#langs button').forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
-$$('#countSeg button').forEach(b=>b.onclick=()=>{ S.n=+b.dataset.n; renderTeamInputs(); save(); });
-$('#timerOn').onchange = e=>{ S.timerOn=e.target.checked; renderTimer(); save(); };
-$('#shuffleOn').onchange = e=>{ S.shuffle=e.target.checked; save(); };
-$('#stMinus').onclick = ()=>{ S.steps=Math.max(3,S.steps-1); renderTimer(); save(); };
-$('#stPlus').onclick = ()=>{ S.steps=Math.min(30,S.steps+1); renderTimer(); save(); };
-$$('#stSeg button').forEach(b=>b.onclick=()=>{ S.steps=+b.dataset.st; renderTimer(); save(); });
-$('#secMinus').onclick = ()=>{ S.secs=Math.max(5,S.secs-5); renderTimer(); save(); };
-$('#secPlus').onclick = ()=>{ S.secs=Math.min(300,S.secs+5); renderTimer(); save(); };
-qInput.oninput = ()=>{ S.qtext=qInput.value; updateQCount(); save(); };
-$('#sampleBtn').onclick = ()=>{ qInput.value=SAMPLES[S.lang]; S.qtext=qInput.value; updateQCount(); save(); };
-$('#clearBtn').onclick = ()=>{ qInput.value=''; S.qtext=''; updateQCount(); save(); qInput.focus(); };
-$('#startBtn').onclick = ()=>{
-  ac();
-  const r = updateQCount();
-  if(r.errs.length) return;
-  if(!r.qs.length){ $('#setupErr').textContent = t('noQ'); return; }
-  lastQs = r.qs; save(); startGame();
-};
-
-/* ---------- GEMINI ---------- */
-const gKey=$('#gKey'), gTopic=$('#gTopic'), gModel=$('#gModel'), gCount=$('#gCount'), gStatus=$('#gStatus');
-gKey.value=S.key||''; gTopic.value=S.topic||''; gModel.value=S.model||'gemini-2.5-flash';
-gKey.oninput=()=>{S.key=gKey.value.trim();save();}; gTopic.oninput=()=>{S.topic=gTopic.value;save();}; gModel.oninput=()=>{S.model=gModel.value.trim();save();};
-function gSay(msg, cls){ gStatus.textContent=msg; gStatus.className='hint '+(cls||''); }
-$('#gBtn').onclick = async ()=>{
-  const key=gKey.value.trim(), topic=gTopic.value.trim(), model=gModel.value.trim()||'gemini-2.5-flash';
-  const count=Math.max(3,Math.min(30,parseInt(gCount.value,10)||10));
-  if(!key||!topic){ gSay(t('needKey'),'st-err'); return; }
-  const LN = {ru:'Russian', kk:'Kazakh (Cyrillic script)', uz:'Uzbek (Cyrillic script)'}[S.lang];
-  const prompt = `Create ${count} multiple-choice quiz questions for a school lesson.
-Topic (subject, grade, lesson theme): ${topic}
-Language of questions and answer options: ${LN}.
-Output ONLY the questions, one per line, no numbering, no headings, no markdown, no blank lines, in exactly this format:
-Question | option A | option B | option C | option D | N
-where N is the number (1-4) of the correct option.
-Rules: exactly 4 options; never use the "|" character inside a question or option; keep options short (max ~8 words); vary the position of the correct answer; questions must be factually correct and suitable for the stated grade.`;
-  const btn=$('#gBtn'); btn.disabled=true; btn.textContent=t('generating'); gSay(t('generating'));
-  try{
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`,{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}], generationConfig:{temperature:0.8}})
-    });
-    const data = await res.json().catch(()=>({}));
-    if(!res.ok) throw new Error((data.error&&data.error.message)||('HTTP '+res.status));
-    const txt = ((data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts)||[]).map(p=>p.text||'').join('\n');
-    const good = txt.split(/\r?\n/)
-      .map(l=>l.replace(/^[\s>*`\-•]+/,'').replace(/^\d{1,2}[.)]\s+/,'').replace(/`+$/,'').trim())
-      .filter(l=>{ if(!l.includes('|')) return false; const r=parseQ(l); return r.qs.length===1 && r.qs[0].opts; });
-    if(!good.length) throw new Error('empty response');
-    qInput.value = good.join('\n'); S.qtext=qInput.value; save(); updateQCount();
-    gSay(t('genOk',{n:good.length}),'st-ok');
-  }catch(e){ gSay(t('genErr')+e.message,'st-err'); }
-  finally{ btn.disabled=false; btn.textContent=t('generate'); }
-};
-
-/* ---------- ПОЛНЫЙ ЭКРАН И ЗВУК ---------- */
-function fsIcon(){ const on=!!document.fullscreenElement; $$('.fs-btn').forEach(b=>b.innerHTML=on?ICON.fsOut:ICON.fsIn); }
-$$('.fs-btn').forEach(b=>b.onclick=()=>{
-  if(document.fullscreenElement) { try{ const r=document.exitFullscreen&&document.exitFullscreen(); if(r&&r.catch) r.catch(()=>{}); }catch(e){} }
-  else { const el=document.documentElement; try{ const r=(el.requestFullscreen||el.webkitRequestFullscreen||function(){}).call(el); if(r&&r.catch) r.catch(()=>{}); }catch(e){} }
-});
-document.addEventListener('fullscreenchange', fsIcon);
-function sndIcon(){ $('#sndBtn').innerHTML = S.muted?ICON.mute:ICON.snd; }
-$('#sndBtn').onclick = ()=>{ S.muted=!S.muted; sndIcon(); save(); if(!S.muted) tone(880,0,.1,'triangle',.15); };
-$('#setBtn').innerHTML = ICON.gear;
-let exitArm=0;
-$('#setBtn').onclick = ()=>{
-  if(G && !G.over && Date.now()-exitArm>3000){ exitArm=Date.now(); toast(t('exitTap'),2500); return; }
-  exitArm=0; toSetup();
-};
-
-/* ---------- ИГРА: общий вопрос, каждая команда отвечает сама ---------- */
-let G = null, lastQs = [];
-const RING_C = 2*Math.PI*42;
-$('#ring').style.strokeDasharray = RING_C;
-
-function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } return a; }
-
-function buildClouds(){
-  const box=$('#clouds'); box.innerHTML='';
-  const cfg=[[190,62,6],[130,48,22],[240,80,40],[110,40,58],[170,70,14],[150,55,32]];
-  cfg.forEach(([w,d,top])=>{
-    const c=document.createElement('div'); c.className='cloud';
-    c.style.setProperty('--w',w+'px'); c.style.setProperty('--d',d+'s');
-    c.style.setProperty('--dl',(-Math.random()*d).toFixed(1)+'s');
-    c.style.top = top+'%'; c.style.opacity = (0.7+Math.random()*.25).toFixed(2);
-    box.append(c);
-  });
-}
-
-function startGame(){
-  clearTimer();
-  const names = S.names.slice(0,S.n), order = lastQs.map((_,i)=>i);
-  if(S.shuffle) shuffle(order);
-  G = {
-    teams: names.map((nm,i)=>({name:(nm||'').trim()||('#'+(i+1)), color:COLORS[i], level:0, correct:0, wrong:0, map:[], pick:null, el:null})),
-    N: S.steps, qs: lastQs, order, qi:0, q:null, phase:'start', over:false, tInt:null, tEnd:0
-  };
-  const g = G;
-  $('#setup').classList.add('hidden'); $('#win').classList.add('hidden'); $('#game').classList.remove('hidden');
-  stopConfetti();
-  $('#qtext').textContent=''; $('#qnum').classList.add('hidden');
-  $('#nextBtn').classList.add('hidden'); $('#timer').classList.add('hidden');
-  buildPanels(); sizeSky(); buildSky();
-  G.teams.forEach((tm,i)=>{ const el=$('#b'+i); el.style.transition='none'; el.style.bottom='0%'; });
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    if(G!==g) return;
-    G.teams.forEach((tm,i)=>{ $('#b'+i).style.transition=''; burn(i); });
-    posBalloons();
-  }));
-  ['3','2','1',t('go')].forEach((txt,k)=>setTimeout(()=>{
-    if(G!==g) return;
-    toast(txt, 700);
-    if(k<3) tone(660,0,.15,'square',.08); else tone(990,0,.3,'square',.1);
-    if(k===3) showQuestion();
-  }, 300+k*800));
-}
-
-function buildPanels(){
-  const p=$('#panel'); p.innerHTML='';
-  const n=G.teams.length;
-  p.style.setProperty('--n', n);
-  ['n2','n3','n4'].forEach(c=>p.classList.toggle(c, c==='n'+n));
-  G.teams.forEach((tm,i)=>{
-    const d=document.createElement('div'); d.className='tp'; d.style.setProperty('--c',tm.color);
-    d.innerHTML='<div class="tp-head"><span class="tp-name"></span><span class="tp-fb"></span><span class="tp-score"></span></div>'+
-      '<div class="tp-opts"></div>'+
-      '<div class="tp-lock"><div class="lk-ic">🔒</div><div class="lk-t"></div><div class="lk-s"></div></div>';
-    const q=s=>d.querySelector(s);
-    q('.tp-name').textContent='🎈 '+tm.name;
-    q('.lk-t').textContent=t('locked'); q('.lk-s').textContent=t('wait');
-    tm.el={root:d, fb:q('.tp-fb'), opts:q('.tp-opts'), score:q('.tp-score')};
-    tm.el.score.textContent='⭐ 0';
-    p.append(d);
-  });
-}
-
-function showQuestion(){
-  if(!G || G.over) return;
-  const len=G.qs.length;
-  if(G.qi>0 && G.qi%len===0 && S.shuffle) shuffle(G.order);
-  const q=G.qs[G.order[G.qi%len]]; G.q=q; G.qi++;
-  const qn=$('#qnum'); qn.textContent=t('q')+' '+G.qi; qn.classList.remove('hidden');
-  const qt=$('#qtext'); qt.textContent=q.text; qt.classList.toggle('long', q.text.length>80);
-  $('#nextBtn').classList.add('hidden');
-  G.teams.forEach((tm,i)=>{
-    const el=tm.el; tm.pick=null;
-    el.root.classList.remove('good','miss','locked');
-    el.fb.textContent=''; el.fb.className='tp-fb';
-    el.opts.innerHTML='';
-    // у каждой команды свой порядок вариантов — нельзя подсмотреть у соседей
-    tm.map=shuffle(q.opts.map((_,k)=>k));
-    tm.map.forEach((oi,k)=>{
-      const b=document.createElement('button'); b.className='opt';
-      const L=document.createElement('b'); L.textContent=LETTERS[k];
-      const sp=document.createElement('span'); sp.textContent=q.opts[oi];
-      b.append(L,sp);
-      b.addEventListener('pointerdown',e=>{ e.preventDefault(); pick(i,k); });
-      el.opts.append(b);
-    });
-  });
-  G.phase='ask';
-  const tmr=$('#timer');
-  if(S.timerOn){
-    tmr.classList.remove('hidden','warn');
-    G.tEnd=Date.now()+S.secs*1000; lastSec=null;
-    G.tInt=setInterval(tick,100); tick();
-  } else tmr.classList.add('hidden');
-}
-
-function pick(i,k){
-  if(!G || G.phase!=='ask') return;
-  const tm=G.teams[i]; if(tm.pick!==null) return;
-  tm.pick=k; ac();
-  tone(700,0,.08,'triangle',.15); tone(1050,.07,.12,'triangle',.15);
-  tm.el.root.classList.add('locked');
-  Array.from(tm.el.opts.children).forEach(b=>b.disabled=true);
-  if(G.teams.every(x=>x.pick!==null)){ const g=G; setTimeout(()=>{ if(G===g) reveal(); },500); }
-}
-
-let lastSec=null;
-function tick(){
-  if(!G || G.phase!=='ask') return;
-  const rem=Math.max(0,(G.tEnd-Date.now())/1000), sec=Math.ceil(rem);
-  $('#tnum').textContent=sec;
-  $('#ring').style.strokeDashoffset=RING_C*(1-rem/S.secs);
-  $('#timer').classList.toggle('warn', rem<=5);
-  if(sec!==lastSec && sec<=5 && sec>0) SFX.tick();
-  lastSec=sec;
-  if(rem<=0) reveal();
-}
-function clearTimer(){ if(G&&G.tInt){ clearInterval(G.tInt); G.tInt=null; } }
-
-function reveal(){
-  if(!G || G.phase!=='ask') return;
-  G.phase='reveal'; clearTimer();
-  let anyOk=false; const short=G.teams.length>=3;
-  G.teams.forEach((tm,i)=>{
-    const el=tm.el; el.root.classList.remove('locked');
-    Array.from(el.opts.children).forEach((b,j)=>{
-      b.disabled=true;
-      if(tm.map[j]===G.q.correct) b.classList.add('ok'); else if(j===tm.pick) b.classList.add('bad'); else b.classList.add('dim');
-    });
-    const ok = tm.pick!==null && tm.map[tm.pick]===G.q.correct;
-    if(ok){
-      tm.correct++; tm.level=Math.min(G.N,tm.level+1); burn(i); anyOk=true;
-      el.fb.textContent=short?'⭐ +1':t('good'); el.fb.className='tp-fb ok'; el.root.classList.add('good');
-    } else {
-      // без штрафа: шар остаётся на месте
-      if(tm.pick!==null) tm.wrong++;
-      el.fb.textContent = short ? (tm.pick===null?'⏰':'🙂') : (tm.pick===null ? t('timeUp') : t('miss')); el.fb.className='tp-fb no'; el.root.classList.add('miss');
+    function ensureAudio() {
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
     }
-    el.score.textContent='⭐ '+tm.correct;
-  });
-  posBalloons();
-  if(anyOk) SFX.correct(); else SFX.wrong();
-  $('#timer').classList.add('hidden');
-  const winners=G.teams.filter(x=>x.level>=G.N);
-  if(winners.length){ G.over=true; const g=G; setTimeout(()=>{ if(G===g) showWin(winners); },1500); return; }
-  $('#nextBtn').classList.remove('hidden');
-}
-function next(){ if(G && !G.over && G.phase==='reveal') showQuestion(); }
-$('#nextBtn').onclick = next;
-document.addEventListener('keydown',e=>{
-  if(!G || $('#game').classList.contains('hidden')) return;
-  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
-  if((e.key==='Enter'||e.key===' '||e.key==='ArrowRight') && G.phase==='reveal'){ e.preventDefault(); next(); }
-});
 
-function buildSky(){
-  const tr=$('#track'); tr.innerHTML='';
-  const N=G.N, every = N<=12 ? 1 : N<=20 ? 2 : 5;
-  for(let L=0;L<=N;L++){
-    const m=document.createElement('div'); m.className='mark'+(L===N?' top':'')+(L===0?' zero':'');
-    m.style.bottom=(L/N*100)+'%';
-    if(L===N || (L%every===0 && N-L>=every)){ const s=document.createElement('span'); s.textContent = L===N?'🏁 '+N:L; m.append(s); }
-    tr.append(m);
-  }
-  const n=G.teams.length;
-  G.teams.forEach((tm,i)=>{
-    const b=document.createElement('div'); b.className='balloon'; b.id='b'+i;
-    b.style.left=((i+.5)/n*100)+'%';
-    const sw=document.createElement('div'); sw.className='sway'; sw.style.animationDelay=(-i*1.1)+'s';
-    sw.innerHTML=balloonSVG(tm.color);
-    const tag=document.createElement('div'); tag.className='tag'; tag.style.background=tm.color; tag.textContent=tm.name;
-    sw.append(tag); b.append(sw); tr.append(b);
-  });
-}
-function sizeSky(){
-  const h=$('#sky').clientHeight; if(!h) return;
-  document.documentElement.style.setProperty('--bh', Math.round(Math.max(70,Math.min(210,h*0.3)))+'px');
-}
-window.addEventListener('resize', sizeSky);
-if(window.ResizeObserver) new ResizeObserver(sizeSky).observe($('#sky'));
-function posBalloons(){
-  G.teams.forEach((tm,i)=>{ const el=$('#b'+i); if(el) el.style.bottom=(Math.max(0,Math.min(G.N,tm.level))/G.N*100)+'%'; });
-}
-function burn(i){ const el=$('#b'+i); if(!el) return; el.classList.add('burn'); clearTimeout(el._bt); el._bt=setTimeout(()=>el.classList.remove('burn'),1200); }
+    function playTone(freq, type = 'sine', duration = 0.12, volume = 0.15, delay = 0) {
+        if (isMuted) return;
+        ensureAudio();
+        setTimeout(() => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            
+            gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(volume, audioCtx.currentTime + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
 
-let toastT;
-function toast(msg, ms){ const el=$('#toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),ms||2300); }
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }, delay);
+    }
 
-/* ---------- ПОБЕДА ---------- */
-function showWin(ws){
-  clearTimer(); posBalloons();
-  const tie=ws.length>1;
-  $('#winBalloon').innerHTML=ws.map(w=>balloonSVG(w.color)).join('');
-  $('.win-lbl').textContent=t(tie?'winners':'winner');
-  const wn=$('#winName'); wn.textContent=ws.map(w=>w.name).join(' + '); wn.style.color=tie?'var(--ink)':ws[0].color;
-  $('#winReason').textContent=t(tie?'winTie':'winTop');
-  const tb=$('#statTable'); tb.innerHTML='';
-  const hr=document.createElement('tr');
-  [t('team'),t('right'),t('mistakes'),t('level')].forEach(h=>{ const th=document.createElement('th'); th.textContent=h; hr.append(th); });
-  tb.append(hr);
-  G.teams.slice().sort((a,b)=>b.level-a.level||b.correct-a.correct).forEach(x=>{
-    const tr=document.createElement('tr'); if(ws.includes(x)) tr.className='w';
-    const c1=document.createElement('td'); const dot=document.createElement('i'); dot.style.background=x.color; c1.append(dot, document.createTextNode(x.name));
-    const c2=document.createElement('td'); c2.className='c'; c2.textContent=x.correct;
-    const c3=document.createElement('td'); c3.className='x'; c3.textContent=x.wrong;
-    const c4=document.createElement('td'); c4.textContent=x.level+' / '+G.N;
-    tr.append(c1,c2,c3,c4); tb.append(tr);
-  });
-  $('#win').classList.remove('hidden');
-  SFX.win(); startConfetti(ws[0].color);
-}
-$('#againBtn').onclick=()=>startGame();
-$('#toSetupBtn').onclick=()=>toSetup();
-function toSetup(){
-  clearTimer(); stopConfetti(); G=null;
-  $('#win').classList.add('hidden'); $('#game').classList.add('hidden'); $('#setup').classList.remove('hidden');
-}
+    // Sound Effects
+    function sfxTick(urgent = false) {
+        if (urgent) {
+            playTone(880, 'sine', 0.09, 0.22);
+            playTone(1760, 'triangle', 0.05, 0.08);
+        } else {
+            playTone(1200, 'sine', 0.035, 0.05);
+        }
+    }
 
-/* конфетти */
-let CF={run:false,raf:0};
-function startConfetti(main){
-  const c=$('#confetti'), ctx=c.getContext('2d'), dpr=window.devicePixelRatio||1;
-  const W=innerWidth, H=innerHeight; c.width=W*dpr; c.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
-  const pal=[main,main,'#84CC16','#FDE047','#38BDF8','#F472B6','#fff'];
-  const mk=init=>({x:Math.random()*W, y:init?-Math.random()*H:-20, vx:(Math.random()-.5)*2.4, vy:2+Math.random()*3.5, r:Math.random()*6.3, vr:(Math.random()-.5)*.3, w:8+Math.random()*9, h:5+Math.random()*6, c:pal[Math.random()*pal.length|0]});
-  const P=Array.from({length:220},()=>mk(true)), t0=performance.now();
-  CF.run=true; cancelAnimationFrame(CF.raf);
-  (function loop(now){
-    if(!CF.run){ ctx.clearRect(0,0,W,H); return; }
-    ctx.clearRect(0,0,W,H);
-    P.forEach(p=>{
-      p.x+=p.vx+Math.sin(now/500+p.r)*.7; p.y+=p.vy; p.r+=p.vr;
-      if(p.y>H+20 && now-t0<9000) Object.assign(p,mk(false));
-      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.fillStyle=p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
-    });
-    CF.raf=requestAnimationFrame(loop);
-  })(t0);
-}
-function stopConfetti(){ CF.run=false; }
+    function sfxTimeUp() {
+        playTone(523.25, 'sawtooth', 0.25, 0.2, 0);
+        playTone(392.00, 'sawtooth', 0.25, 0.2, 220);
+        playTone(261.63, 'sawtooth', 0.65, 0.25, 440);
+    }
 
-/* ---------- ИНИЦИАЛИЗАЦИЯ ---------- */
-if(!I18N[S.lang]) S.lang='ru';
-qInput.value = (S.qtext===null||S.qtext===undefined) ? SAMPLES[S.lang] : S.qtext;
-$('#logoBalloon').innerHTML = balloonSVG('#84CC16');
-$('#tbLogo').innerHTML = balloonSVG('#84CC16').replace('class="bsvg"','style="width:30px;height:46px"');
-renderTeamInputs(); renderTimer(); applyLang(); fsIcon(); sndIcon(); buildClouds();
-})();
+    function sfxScoreUp() {
+        playTone(587.33, 'sine', 0.14, 0.16, 0);
+        playTone(880.00, 'sine', 0.22, 0.18, 70);
+    }
+
+    function sfxScoreDown() {
+        playTone(320, 'triangle', 0.15, 0.14, 0);
+    }
+
+    function sfxLifeline() {
+        playTone(523.25, 'sine', 0.15, 0.18, 0);
+        playTone(659.25, 'sine', 0.15, 0.18, 90);
+        playTone(1046.50, 'sine', 0.35, 0.2, 180);
+    }
+
+    function toggleMute() {
+        isMuted = !isMuted;
+        const icon = document.getElementById('soundIcon');
+        if (isMuted) {
+            icon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
+            showToast('Дыбыс өшірілді');
+        } else {
+            icon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>';
+            sfxScoreUp();
+            showToast('Дыбыс қосылды');
+        }
+    }
+
+    function getTeamName(teamId) {
+        const card = document.querySelector(`.team-${teamId} .team-title`);
+        return card ? card.textContent.trim() : `Топ ${teamId}`;
+    }
+
+    function changeScore(team, delta) {
+        scores[team] = Math.max(0, scores[team] + delta);
+        const el = document.getElementById(`score-${team}`);
+        el.textContent = scores[team];
+
+        el.style.transform = 'scale(1.09)';
+        setTimeout(() => el.style.transform = '', 160);
+
+        if (delta > 0) sfxScoreUp();
+        else sfxScoreDown();
+    }
+
+    function addAllScores(delta) {
+        [1, 2, 3].forEach(id => {
+            scores[id] = Math.max(0, scores[id] + delta);
+            const el = document.getElementById(`score-${id}`);
+            el.textContent = scores[id];
+            el.style.transform = 'scale(1.09)';
+            setTimeout(() => el.style.transform = '', 160);
+        });
+        sfxLifeline();
+        showToast('Барлық топқа +1 ұпай қосылды');
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(currentTime / 60).toString().padStart(2, '0');
+        const secs = (currentTime % 60).toString().padStart(2, '0');
+        const display = document.getElementById('timerDisplay');
+        display.textContent = `${mins}:${secs}`;
+
+        display.classList.remove('warning', 'danger');
+        if (currentTime <= 10 && currentTime > 0) {
+            display.classList.add('danger');
+        } else if (currentTime <= 20 && currentTime > 0) {
+            display.classList.add('warning');
+        }
+    }
+
+    function setTimer(seconds, btnEl = null) {
+        pauseTimer();
+        defaultTime = seconds;
+        currentTime = seconds;
+        updateTimerDisplay();
+
+        if (btnEl) {
+            document.querySelectorAll('.preset-pill').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+        }
+        playTone(600, 'sine', 0.08, 0.1);
+    }
+
+    function setCustomTimer() {
+        const mins = parseInt(document.getElementById('customMin').value) || 0;
+        const secs = parseInt(document.getElementById('customSec').value) || 0;
+        const total = (mins * 60) + secs;
+        if (total > 0) {
+            document.querySelectorAll('.preset-pill').forEach(b => b.classList.remove('active'));
+            setTimer(total);
+            showToast(`Уақыт орнатылды: ${mins} мин ${secs} сек`);
+        }
+    }
+
+    function toggleTimer() {
+        if (isRunning) {
+            pauseTimer();
+        } else {
+            startTimer();
+        }
+    }
+
+    function startTimer() {
+        if (currentTime <= 0) return;
+        ensureAudio();
+        isRunning = true;
+
+        const btn = document.getElementById('startPauseBtn');
+        const icon = document.getElementById('playPauseIcon');
+        const text = document.getElementById('playPauseText');
+
+        btn.className = 'btn-apple btn-pause';
+        icon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+        text.textContent = 'КІДІРТУ';
+
+        playTone(740, 'sine', 0.12, 0.15);
+
+        timerInterval = setInterval(() => {
+            currentTime--;
+            updateTimerDisplay();
+
+            if (currentTime > 0) {
+                sfxTick(currentTime <= 10);
+            } else if (currentTime <= 0) {
+                pauseTimer();
+                sfxTimeUp();
+                showToast('Уақыт аяқталды!');
+            }
+        }, 1000);
+    }
+
+    function pauseTimer() {
+        isRunning = false;
+        clearInterval(timerInterval);
+
+        const btn = document.getElementById('startPauseBtn');
+        const icon = document.getElementById('playPauseIcon');
+        const text = document.getElementById('playPauseText');
+
+        btn.className = 'btn-apple btn-play';
+        icon.innerHTML = '<polygon points="6 4 20 12 6 20 6 4"/>';
+        text.textContent = 'БАСТАУ';
+    }
+
+    function resetTimer() {
+        pauseTimer();
+        currentTime = defaultTime;
+        updateTimerDisplay();
+        playTone(440, 'sine', 0.1, 0.1);
+    }
+
+    function useExtraTime(teamId) {
+        const btn = document.getElementById(`time-btn-${teamId}`);
+        if (btn.classList.contains('used')) {
+            btn.classList.remove('used');
+            return;
+        }
+        btn.classList.add('used');
+        currentTime += 60;
+        updateTimerDisplay();
+        sfxLifeline();
+        showToast(`«${getTeamName(teamId)}» тобы +1 минут қосымша уақыт алды`);
+    }
+
+    function useAudienceHelp(teamId) {
+        const btn = document.getElementById(`aud-btn-${teamId}`);
+        if (btn.classList.contains('used')) {
+            btn.classList.remove('used');
+            return;
+        }
+        btn.classList.add('used');
+        sfxLifeline();
+        showToast(`«${getTeamName(teamId)}» тобы ЗАЛ КӨМЕГІН таңдады`);
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+        const toast = document.getElementById('appleToast');
+        document.getElementById('toastText').textContent = msg;
+        toast.classList.add('visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            toast.classList.remove('visible');
+        }, 3400);
+    }
+
+    function resetAllGame() {
+        if (confirm('Барлық ұпайлар мен көмектерді бастапқы қалпына келтіруді растайсыз ба?')) {
+            resetTimer();
+            [1, 2, 3].forEach(id => {
+                scores[id] = 0;
+                document.getElementById(`score-${id}`).textContent = '0';
+                document.getElementById(`time-btn-${id}`).classList.remove('used');
+                document.getElementById(`aud-btn-${id}`).classList.remove('used');
+            });
+            showToast('Ойын толығымен жаңартылды');
+        }
+    }
+
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    }
 </script>
+
 </body>
 </html>
